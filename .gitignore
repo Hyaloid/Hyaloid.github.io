@@ -1,13 +1,22 @@
-# project
-_site
-.sass-cache
-.vagrant
-
-# general
-.DS_Store
-Thumbs.db
-ehthumbs.db
-
+# Bundler cache
+.bundle
+vendor
 Gemfile.lock
 
-beautiful-jekyll-theme-*.gem
+# Jekyll cache
+.jekyll-cache
+_site
+
+# RubyGems
+*.gem
+
+# NPM dependencies
+node_modules
+package-lock.json
+
+# IDE configurations
+.idea
+.vscode
+
+# Misc
+assets/js/dist
