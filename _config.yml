@@ -22,7 +22,7 @@ author: Hyaloid
 navbar-links:
   About Me: "aboutme"
   Categories:
-    - tags: "tags"
+    - Blog: "blog"
     # - Beautiful Jekyll: "https://beautifuljekyll.com"
     # - Learn markdown: "https://www.markdowntutorial.com/"
   Home: "Hyaloid.github.io"
