@@ -4,11 +4,11 @@ title: About me
 subtitle: ---
 ---
 
-### Education
+## Education
 
-- ...
-- ...
+- University of Chinese Academy of Sciences, Computer Technology
+- Northeastern University, Computer Science and Technology
 
-### Experience
+## Experience
 
-...
+- Shopee, Software Development Engineer
