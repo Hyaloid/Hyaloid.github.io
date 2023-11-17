@@ -23,7 +23,7 @@ author: SeaMount
 
 2017 年 6 月，Google Brain 在 NeurIPS 上发表了被称为大语言模型开山之作的文章 [Attention Is All You Need](https://proceedings.neurips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html)，推出了 Transformer 模型结构。相较于之前的 RNN 结构，Transformer 能支持并行计算，可以更好地捕获长距离依赖，并且有很强的可扩展性，由此大模型时代的序幕正式揭开。
 
-2018 年 6 月，OpenAI 基于 Transformer 架构发布了 117M 参数量的 GPT-1。GPT-1 堆叠了 12 个 decoder，并且采取 Pretrain + FineTuning 的模式，同时发表了论文 [Improving Language Understanding by Generative Pre-training](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)。
+2018 年 6 月，OpenAI 基于 Transformer 架构发布了 117M 参数量的 GPT-1，同时发表了论文 [Improving Language Understanding by Generative Pre-training](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)。GPT-1 堆叠了 12 个 decoder，并且采取 Pretrain + FineTuning 的模式。
 
 2018 年 10 月，Google 发表了 [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](http://arxiv.org/abs/1810.04805)，推出 340M 参数量的模型 BERT。BERT 也使用 Pretrain + FineTuning 的 NLP 范式，但与 GPT 不同的是，BERT 是 encoder-only 结构。继 BERT 之后，NLP 范式彻底转变，进入到 Pretrain + FineTuning 阶段。
 
