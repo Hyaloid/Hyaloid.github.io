@@ -192,7 +192,7 @@ Linear 层做的事情主要是将 Q、K、V 分成 h 个 head。
 
 ![pos-layernorm](/assets/img/20231118/pos-layernorm.png){: .mx-auto.d-block :}
 <center style="font-size:14px;color:#C0C0C0;">
-(a) Post-LN Transformer layer;(b) Pre-LN Transformer layer
+(a) Post-LN Transformer layer; (b) Pre-LN Transformer layer
 </center>
 
 包含 Multi-Head Self-Attention 和 Feed Forward Network。在 Attention Is All You Need 中，encoder 按照 input、Multi-Head Attention、addtion、Layer Norm、FFN、addition、Layer Norm、output 的顺序组成。但是这种原始的结构并不是最好的设计，[On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745) 证明了将 Layer Norm 前置效果更好。
@@ -235,3 +235,4 @@ Transformer 使用了 attention 机制，将序列中的任意两个位置的距
 3. [知乎专栏：Positional Encoding](https://zhuanlan.zhihu.com/p/454482273)
 4. [知乎专栏：Transformer模型详解（图解最完整版）](https://zhuanlan.zhihu.com/p/338817680)
 5. [Machine-learning-notes](https://luweikxy.gitbook.io/machine-learning-notes/self-attention-and-transformer#Self-Attention%E6%9C%BA%E5%88%B6)
+6. [详解Self-Attention和Multi-Head Attention](https://imzhanghao.com/2021/09/15/self-attention-multi-head-attention/)
