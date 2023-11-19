@@ -92,7 +92,7 @@ share-links-active:
   twitter: true
   github: true
   linkedin: true
-  steam: true
+  steam: false
   vk: false
 
 # How to display the link to your website in the footer
@@ -143,7 +143,7 @@ footer-hover-col: "#0085A1"
 # Alternatively, the navbar, footer, and page background can be set to an image
 # instead of colour
 
-#navbar-img: "/assets/img/bgimage.png"
+navbar-img: "/assets/img/bgimage.png"
 #footer-img: "/assets/img/bgimage.png"
 #page-img: "/assets/img/bgimage.png"
 

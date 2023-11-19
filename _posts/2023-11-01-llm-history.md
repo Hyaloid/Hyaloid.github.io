@@ -8,7 +8,9 @@ author: SeaMount
 
 ![llm-evolution-tree](/assets/img/20231101/llm-evolution.png)
 <center style="font-size:14px;color:#C0C0C0;">
-图源：https://github.com/Mooler0410/LLMsPracticalGuide/blob/main/imgs/qr_version.jpg
+图源：<a href="https://arxiv.org/pdf/2304.13712.pdf">
+Harnessing the Power of LLMs in Practice: A Survey on ChatGPT and Beyond
+</a>
 </center>
 
 这是一个百家争鸣，百花齐放的大模型时代，多家科技公司都卷入了这场大模型战争之中，相继推出了各种各样的模型。但今天的主角是 Google 和 OpenAI 两家科技巨头。
@@ -21,7 +23,7 @@ author: SeaMount
 
 ## 初露锋芒
 
-2017 年 6 月，Google Brain 在 NeurIPS 上发表了被称为大语言模型开山之作的文章 [Attention Is All You Need](https://proceedings.neurips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html)，推出了 Transformer 模型结构。相较于之前的 RNN 结构，Transformer 能支持并行计算，可以更好地捕获长距离依赖，并且有很强的可扩展性，由此大模型时代的序幕正式揭开。
+2017 年 6 月，Google Brain 在 NeurIPS 上发表了被称为大语言模型开山之作的文章 [Attention Is All You Need](https://arxiv.org/abs/1706.03762)，推出了 Transformer 模型结构。相较于之前的 RNN 结构，Transformer 能支持并行计算，可以更好地捕获长距离依赖，并且有很强的可扩展性，由此大模型时代的序幕正式揭开。
 
 2018 年 6 月，OpenAI 基于 Transformer 架构发布了 117M 参数量的 GPT-1，同时发表了论文 [Improving Language Understanding by Generative Pre-training](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)。GPT-1 堆叠了 12 个 decoder，并且采取 Pretrain + FineTuning 的模式。
 
