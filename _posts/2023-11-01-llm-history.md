@@ -3,12 +3,13 @@ layout: post
 title: Google & OpenAI 大模型之战
 tags: [llm, Google, OpenAI]
 comments: true
+thumbnail-img: /assets/img/20231101/llm-evolution.png
 author: SeaMount
 ---
 
 ![llm-evolution-tree](/assets/img/20231101/llm-evolution.png)
 <center style="font-size:14px;color:#C0C0C0;">
-图源：<a href="https://arxiv.org/pdf/2304.13712.pdf">
+图源：<a href="https://arxiv.org/abs/2304.13712">
 Harnessing the Power of LLMs in Practice: A Survey on ChatGPT and Beyond
 </a>
 </center>

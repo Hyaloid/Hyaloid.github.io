@@ -69,10 +69,10 @@ Self-attention，指的不是 target 和 source 之间的 attention 机制，而
 
     $$A=
     \begin{bmatrix}
-    \alpha_{1, 1}&\alpha_{2, 1}&\alpha_{3, 1} \\
-    \alpha_{1, 2}&\alpha_{2, 2}&\alpha_{3, 2} \\
-    \alpha_{1, 3}&\alpha_{2, 3}&\alpha_{3, 3} \\
-    \alpha_{1, 4}&\alpha_{2, 4}&\alpha_{3, 4} \\
+    \alpha_{1, 1}&\alpha_{2, 1}&\alpha_{3, 1}&\alpha_{4, 1} \\
+    \alpha_{1, 2}&\alpha_{2, 2}&\alpha_{3, 2}&\alpha_{4, 2} \\
+    \alpha_{1, 3}&\alpha_{2, 3}&\alpha_{3, 3}&\alpha_{4, 3} \\
+    \alpha_{1, 4}&\alpha_{2, 4}&\alpha_{3, 4}&\alpha_{4, 4} \\
     \end{bmatrix}
     $$
 
