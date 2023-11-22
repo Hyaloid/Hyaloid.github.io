@@ -122,7 +122,7 @@ dot-product attention 在计算过程中和 self-attention 的差别在于 scale
 
 假设使用 $$m$$ 个 head，矩阵运算如下：
 
-$$A_m = \frac{K^T_m Q_M}{\sqrt{D_k}}$$
+$$A_m = \frac{K^T_m Q_m}{\sqrt{D_k}}$$
 
 $$B_m=V_msoftmax(A_m)$$
 
@@ -130,7 +130,7 @@ $$B=W^o
 \begin{bmatrix}
 B_1 \\
 \dots \\
-B_M \\
+B_m \\
 \end{bmatrix}
 $$
 
