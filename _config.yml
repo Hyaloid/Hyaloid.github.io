@@ -21,8 +21,9 @@ author: Hyaloid
 
 navbar-links:
   About Me: "aboutme"
-  Categories:
-    - Blog: "blog"
+  Menu:
+    - Tags: "tag"
+    - Categories: "categories"
     # - Beautiful Jekyll: "https://beautifuljekyll.com"
     # - Learn markdown: "https://www.markdowntutorial.com/"
   Home: "Hyaloid.github.io"

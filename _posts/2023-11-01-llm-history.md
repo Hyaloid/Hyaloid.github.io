@@ -2,6 +2,7 @@
 layout: post
 title: Google & OpenAI 大模型之战
 tags: [llm, Google, OpenAI]
+categories: [Machine Learning]
 comments: true
 thumbnail-img: /assets/img/20231101/llm-evolution.png
 author: SeaMount

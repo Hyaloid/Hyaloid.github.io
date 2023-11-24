@@ -3,6 +3,7 @@ layout: post
 title: Transformer 模型结构不完全详解
 subtitle: Transformer 究竟是什么？
 tags: [llm, Transformer]
+categories: [Machine Learning]
 comments: true
 thumbnail-img: /assets/img/20231118/transformer-architecture.png
 author: SeaMount
