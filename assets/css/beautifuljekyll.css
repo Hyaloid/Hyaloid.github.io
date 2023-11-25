@@ -1132,3 +1132,27 @@ pre {
     display: inline-block;
   }
 }
+
+/* #archives */
+
+#archives cur_year{
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-top: 1.25rem;
+  font-size: 1.875rem;
+}
+
+#archives .date{
+  white-space: nowrap;
+  display: inline-block;
+  /* position: relative; */
+  right: 0.5rem;
+  color: #808080;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+#archives li {
+  margin-left: 20px;
+}

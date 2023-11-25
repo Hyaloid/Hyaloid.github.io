@@ -1,0 +1,28 @@
+---
+layout: page
+title: Archives
+---
+
+
+<div id="archives" class="pl-xl-3">
+    {% for post in site.posts %}
+      {% assign cur_year = post.date | date: '%Y' %}
+  
+      {% if cur_year != last_year %}
+        {% unless forloop.first %}</ul>{% endunless %}
+  
+        <cur_year>{{ cur_year }}</cur_year>
+        {{ '<ul class="list-unstyled">' }}
+  
+        {% assign last_year = cur_year %}
+      {% endif %}
+  
+      <li>
+        <span class="date">{{ post.date | date: "%d" }}</span>
+        <span class="date">{{ post.date | date: "%b" }}</span>
+        <a href="{{ post.url | relative_url }}" style="color:#575656">{{ post.title }}</a>
+      </li>
+  
+      {% if forloop.last %}</ul>{% endif %}
+    {% endfor %}
+  </div>
