@@ -21,7 +21,7 @@ RNN 结构能够很好地处理输入为一个 vector 的任务，但 RNN 却不
 
 注意力机制有许多变体：点注意力（dot-product attention）、QKV 注意力（query-key-value attention）、自注意力（self-attention）、交叉注意力（cross attention）等。Transformer 是第一个完全依靠自注意力来计算输入和输出表示的转换模型，避免了循环和重复。
 
-### self-attention
+### Self-attention
 
 RNN/LSTM 在计算时需要考虑前序信息，所以不能并行，导致训练时间较长。对于远距离的相互依赖的特征，要经过若干时间步步骤的信息累积才能将两者联系起来，而距离越远，有效捕获的可能性越小。self-attention 可以很好地处理 RNN/LSTM 中存在的问题。
 
@@ -37,7 +37,7 @@ Self-attention，指的不是 target 和 source 之间的 attention 机制，而
 
 [On the Relationship between Self-Attention and Convolutional Layers](https://arxiv.org/abs/1911.03584) 中证明了 CNN 是最简单的 self-attention。当数据量小时，CNN 的效果比 self-attention 更好。
 
-#### self-attention 的计算过程
+#### Self-attention 的计算过程
 
 ![self-attention](/assets/img/20231118/self-attention.png){: .mx-auto.d-block :}
 
@@ -100,7 +100,7 @@ Self-attention，指的不是 target 和 source 之间的 attention 机制，而
     ，其中$$V=\begin{matrix}[v^1, \dots , v^4]
     \end{matrix}$$。Self-attention 可以同时计算不同的输入向量，实现并行计算，提高计算速度。
 
-### dot-product attention
+### Dot-product attention
 
 ![dot product attention](/assets/img/20231118/scaled-dot-product-attention.png){: .mx-auto.d-block :}
 
@@ -115,7 +115,7 @@ $$\sqrt{d_k}$$
 
 dot-product attention 在计算过程中和 self-attention 的差别在于 scale 放缩参数。Transformer 中采用 $$\sqrt{d_k}$$ 作为 scale 参数，避免内积结果过大。Mask 为可选项。其余计算步骤和 self-attention 一样。
 
-### multi-head attention
+### Multi-head attention
 
 为了提取更多的交互信息，使用多头注意力（Multi-Head Self-Attention），即在多个不同的投影空间中捕获不同的交互信息。类比卷积神经网络理解，其中一个卷积核通常用于捕获某一类 pattern 的信息，故采用多个卷积核。多头注意力机制采用多个 head，便可以捕捉到不同的相关性。在实践中，首先通过 $$m$$ 个 head 生成 $$m$$ 个不同的输出 $$B_1,B_2,\dots,B_M$$，将其合并后再通过一层全连接层进行线性变换。
 
@@ -176,6 +176,20 @@ class MultiHeadAttention(nn.Module):
         out = self.w_concat(out)
 
         return out
+
+    def split(self, tensor):
+        batch_size, length, d_model = tensor.size()
+
+        d_tensor = d_model // self.n_head
+        tensor = tensor.view(batch_size, length, self.n_head, d_tensor).transpose(1, 2)
+        return tensor
+
+    def concat(self, tensor):
+        batch_size, head, length, d_tensor = tensor.size()
+        d_model = head * d_tensor
+
+        tensor = tensor.transpose(1, 2).contiguous().view(batch_size, length, d_model)
+        return tensor
 ```
 
 Linear 层做的事情主要是将 Q、K、V 分成 h 个 head。
@@ -185,7 +199,7 @@ Linear 层做的事情主要是将 Q、K、V 分成 h 个 head。
 1. Narrow Self-attention：把输入词向量切割成 h 块，每一块使用一次自注意力运算；这种方法速度快，节省内存，但是效果不好；
 2. Wide Self-attention：对输入词向量独立地使用 h 次自注意力运算；这种方法效果好，但会花费更多地时间和内存。
 
-### cross attention
+### Cross attention
 
 交叉注意力是一种再 NLP 任务的架构中使用的机制，其思想是使一个序列能够关注另一个序列。Transformer 中的交叉注意力机制与 self-attention 的计算方式非常相似，只不过在 cross attention 中 $$K$$、$$V$$ 都来自 encoder，$$Q$$ 来自 decoder，而在 self-attention 中 $$Q = K = V$$。
 
