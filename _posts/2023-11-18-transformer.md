@@ -146,7 +146,7 @@ head_i = Attention(QW^Q_i, KW^K_i, VW^V_i)
 $$
 
 $$
-Multi-Head(Q,K,V)=Concat(head_1,\dots,head_h)W^O
+Multi_Head(Q,K,V)=Concat(head_1,\dots,head_h)W^O
 $$
 
 一个简单的 Multi-Head Attention 实现如下：

@@ -30,7 +30,13 @@ author: SeaMount
 
     训练过程中的每一个 step 都会更新模型参数，每个进程处理不同的数据会得到不同的 loss，由 loss 计算反向梯度并更新模型参数后，如何保证进程间模型参数正确同步，是数据并行需要解决的最主要问题。在反向传播的过程中，每个进程上的 loss 不同，因此每个进程在反向传播中会计算出不同的梯度。这时一个关键的操作是要在后续的更新步骤之前，对所有进程上的梯度进行同步，保证后续更新步骤中每个进程使用相同的全局梯度更新模型参数。由 `AllReduce` 对各个设备上的梯度进行同步，以确保各个设备上的模型始终保持一致。
 
-    假设一个 batch 有 n 个样本，一共有 k 个 GPU，第 j 个 GPU 分到 $$m_j$$ 个样本，考虑等分的情况，$$m_j=\frac n k$$，如果考虑总损失函数 loss 对参数 $$w$$ 求导，则有：
+    假设一个 batch 有 n 个样本，一共有 k 个 GPU，第 j 个 GPU 分到 
+    $$m_j$$ 
+    个样本，考虑等分的情况，
+    $$m_j=\frac n k$$
+    ，如果考虑总损失函数 loss 对参数 
+    $$w$$ 
+    求导，则有：
     
     $$\begin{aligned}
     \frac{\partial Loss}{\partial w} &= \frac{1}{n} \sum_{i=1}^n \frac{\partial l(x_i, y_i)}{\partial w} \\&= \frac{m_1}{n}\frac{\partial [\frac{1}{m_1} \sum_{i=1}^{m_1}l(x_i, y_i)]}{\partial w} + \frac{m_2}{n} \frac{\partial \frac{1}{m_2} \sum_{i=m_1+1}^{m_2}l(x_i,y_i)}{\partial w} + \dots \\&= \frac{m_1}{n} \frac{\partial l_1}{\partial w} + \frac{m_2}{n} \frac{\partial l_2}{\partial w} + \dots + \frac{m_k}{n} \frac{\partial l_k}{\partial w} \\&= \frac{1}{k}[\frac{\partial l_1}{\partial w} + \frac{\partial l_2}{\partial w} + \dots + \frac{\partial l_k}{\partial w}]
@@ -104,7 +110,7 @@ Fully Sharded Data Parallel Training
 
 为了最大限度提高内存效率，可以在每层前向传递之后丢弃全部权重，为后续层节省内存。
 
-```pseudo
+```
 FSDP forward pass:
     for layer_i in layers:
         all-gather full weights for layer_i
@@ -157,13 +163,184 @@ for sample, label in dataload.next_batch:
 
 张量并行是指将张量沿特定维度分割成块，每个设备仅保存整个张量的一部分（intra-layer），同时不影响计算图的正确性。它涉及将算子的参数分发到不同的设备。然后，每个设备根据分配的数据片计算本地结果。最后，在算子计算结束时，插入集体通信（例如 all-gather 或 all-reduce）以获得最终结果。尽管有其优点，但张量并行性会带来更高的通信开销，因为每次分割张量操作后都需要同步通信。这种影响在跨节点训练期间尤其明显，低通信带宽会显着降低训练速度。
 
+张量并行从数学原理上来看就是对于 linear 层把矩阵分块进行计算，对于非 linear 层不做额外设计。张量的切分方式分为按行切分和按列切分，分别对应行并行（将权重按行分块，输入按列分块，放到不同的 GPU 上计算）和列并行（将权重按列分块，输入按行分块，放到不同的 GPU 上计算）。
+
+#### 一维张量并行（Megatron）
+
+目前最常用的是 1D 分片，将张量按照某一个维度进行划分（横着切或者竖着切）。目前，在基于 Transformer 架构的大模型中，最常见的张量并行方案由 Megatron-LM 提出，它是一种高效的 1D 张量并行实现，采用非常直接的张量并行方式，对权重进行划分后放至不同的 GPU 上进行计算。这种方法虽然将参数划分到多个 GPU 上，但每个 GPU 仍然需要存储整个中间激活，在处理大模型时会浪费大量显存空间。由于仅采用一维矩阵划分，在每次计算中，每个 GPU 都需要与其它 GPU 进行通信，因此，通信成本会随着并行度增高而激增。
+
+#### 多维张量并行（Colossal AI）
+
+Colossal AI 提供多维张量并行，即以 2/2.5/3 维方式进行张量并行。
+
+- 2D 张量并行
+
+    将 input 和 weight 都沿着两个维度均匀切分
+
+    在 Colossal-AI 中，2D 张量并行实现如下：
+
+    ```python
+    import colossalai  
+    import colossalai.nn as col_nn  
+    import torch  
+    from colossalai.utils import print_rank_0
+    from colossalai.context import ParallelMode
+    from colossalai.core import global_context as gpc
+    from colossalai.utils import get_current_device
+
+    # Parallel Config
+    CONFIG = dict(parallel=dict(
+        data=1,
+        pipeline=1,
+        tensor=dict(size=4, mode='2d'),
+    ))
+
+    parser = colossalai.get_default_parser()  
+        colossalai.launch(config=CONFIG,  
+        rank=args.rank,  
+        world_size=args.world_size,  
+        local_rank=args.local_rank,  
+        host=args.host,  
+        port=args.port)  
+    
+    class MLP(torch.nn.Module):  
+        def __init__(self, dim: int = 256):  
+            super().__init__()  
+            intermediate_dim = dim * 4  
+            self.dense_1 = col_nn.Linear(dim, intermediate_dim)  
+            print_rank_0(f'Weight of the first linear layer: {self.dense_1.weight.shape}')  
+            self.activation = torch.nn.GELU()  
+            self.dense_2 = col_nn.Linear(intermediate_dim, dim)  
+            print_rank_0(f'Weight of the second linear layer: {self.dense_2.weight.shape}')  
+            self.dropout = col_nn.Dropout(0.1)  
+
+        def forward(self, x):  
+            x = self.dense_1(x)  
+            print_rank_0(f'Output of the first linear layer: {x.shape}')  
+            x = self.activation(x)  
+            x = self.dense_2(x)  
+            print_rank_0(f'Output of the second linear layer: {x.shape}')  
+            x = self.dropout(x)  
+            return x
+
+    # build MLP
+    m = MLP()
+
+    # random input
+    x = torch.randn((16, 256), device=get_current_device())
+
+    # partition input
+    torch.distributed.broadcast(x, src=0)
+    x = torch.chunk(x, 2, dim=0)[gpc.get_local_rank(ParallelMode.PARALLEL_2D_COL)]
+    x = torch.chunk(x, 2, dim=-1)[gpc.get_local_rank(ParallelMode.PARALLEL_2D_ROW)]
+    print_rank_0(f'Input: {x.shape}')
+
+    x = m(x)
+    ```
+- 2.5D 张量并行
+
+    与一维张量并行相比，二维张量并行降低了内存成本，但可能引入更多的通信，2.5D 张量并行在 2D 的基础上使用更多的设备来减少通信。
+
+    ```python
+    # parallel config
+    CONFIG = dict(parallel=dict(  
+        data=1,  
+        pipeline=1,  
+        tensor=dict(size=8, mode='2.5d', depth=2),  
+    ))
+
+    ...
+    
+    # build model
+    m = MLP()
+
+    # random input
+    x = torch.randn((16, 256), device=get_current_device())
+
+    # partition input  
+    torch.distributed.broadcast(x, src=0)  
+    x = torch.chunk(x, 2, dim=0)[gpc.get_local_rank(ParallelMode.PARALLEL_2P5D_DEP)]  
+    x = torch.chunk(x, 2, dim=0)[gpc.get_local_rank(ParallelMode.PARALLEL_2P5D_COL)]  
+    x = torch.chunk(x, 2, dim=-1)[gpc.get_local_rank(ParallelMode.PARALLEL_2P5D_ROW)]  
+    print_rank_0(f'Input: {x.shape}')  
+    
+    x = m(x)
+    ```
+
+    在 d = 1 时，这种并行模式可以退化成 2D 张量并行，在 d = q 时，它变成 3D 张量并行。
+
+- 3D 张量并行
+
+    ```python
+    # parallel config
+    CONFIG = dict(parallel=dict(  
+        data=1,  
+        pipeline=1,  
+        tensor=dict(size=8, mode='3d'),  
+    ))
+
+    ...
+    
+    # build model
+    m = MLP()
+
+    # random input
+    x = torch.randn((16, 256), device=get_current_device())
+
+    # partition input  
+    torch.distributed.broadcast(x, src=0)  
+    x = torch.chunk(x, 2, dim=0)[gpc.get_local_rank(ParallelMode.PARALLEL_3D_WEIGHT)]  
+    x = torch.chunk(x, 2, dim=0)[gpc.get_local_rank(ParallelMode.PARALLEL_3D_INPUT)]  
+    x = torch.chunk(x, 2, dim=-1)[gpc.get_local_rank(ParallelMode.PARALLEL_3D_OUTPUT)]  
+    print_rank_0(f'Input: {x.shape}')  
+    
+    x = m(x)
+    ```
+
 ### 流水并行(Pipeline Parallelism)
 
-为了减少节点之间的通信量，提出了流水并行。流水并行性在层级别（inter-layer）对模型进行划分，同时还将 minibatches 划分为 micro-batches。
+为了减少节点之间的通信量，提出了流水并行。流水并行性在层级别（inter-layer）对模型进行划分，同时还将 mini-batches 划分为 micro-batches。
 
 ![pp](/assets/img/20231121/pp1.png){: .mx-auto.d-block :}
 
+- 朴素流水并行
+
+    朴素流水并行是实现流水并行最直接的方法。将模型按照 inter-layer 切分成多个部分（stage），并将每个部分（stage）分配给一个 GPU，然后对小批量数据进行常规训练，在模型切分成多个部分的边界进行通信。
+
+    ![naivepp](/assets/img/20231121/naivepp.png){: .mx-auto.d-block :}
+
+    ```python
+    output = L4(L3(L2(L1(input))))
+    ```
+
+    假设使用 K 块 GPU，朴素流水线的 Bubble 时间为 
+    $$O(\frac{K-1}{K})$$
+    ，当 K 越大，即 GPU 的数量越多时，空置的比例接近 1，即 GPU 的资源都被浪费掉了，因此，朴素流水线并行将会导致 GPU 使用率过低。另外，还需要加上在设备之间复制数据的通信开销，所以，4 张使用朴素流水线并行的 6GB 的卡能够容纳 1 张 24GB 卡相同大小的模型，而后者因为没有数据传输开销，训练得更快。
+- F-then-B 流水并行
+
+    ![microbatch](/assets/img/20231121/microbatch.png){: .mx-auto.d-block :}
+
+    先进行 forward 计算，将 forward 计算的中间结果都缓存下来，再使用缓存的结果进行 backward 计算。由于 F-then-B 缓存了多个 micro-batch 的中间变量和梯度，显存的实际利用率不高。
+
+    Bubble 时间为
+    $$O(\frac{K-1}{K+M-1})$$
+    。当
+    $$M \gg K$$ 
+    时，Bubble 时间可以忽略不计。
+
+- 1F1B 流水并行
+
+    ![1F1B](/assets/img/20231121/1F1B.png){: .mx-auto.d-block :}
+
+    一个 stage 在做完一次 micro-batch 的 forward 之后，就立即进行 micro-batch 的 backward，然后释放资源，就可以让其它 stage 尽可能早开始计算。即把整体同步变成了众多小数据块上的异步，这些小数据块都是独立更新的。在 1F1B 的 steady 状态下，每台机器上严格交替进行前/后想计算，这样使得每个 GPU 上都会有一个 micro-batch 数据正在被处理，从而保证资源的高利用率。
+
+    Bubble 时间为
+    $$O(\frac{K-1}{K+M-1})$$
+    。在设备显存一定的情况下，可以通过增大 M 的值（micro-batch的数量）来降低 bubble 率。
+
 ## 混合并行
 
-混合并行，顾名思义，即将多种并行策略混用。
+混合并行，顾名思义，即将多种并行策略混用。下图展示的是 DP + TP + PP 混合并行。
+
+![hp](/assets/img/20231121/hp.png){: .mx-auto.d-block :}
 
