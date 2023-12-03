@@ -5,6 +5,7 @@ subtitle: 数据并行、模型并行、混合并行
 tags: [MLSys, Parallelism]
 categories: [Parallel Training]
 comments: true
+readtime: true
 author: SeaMount
 ---
 
