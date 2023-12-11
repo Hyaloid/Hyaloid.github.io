@@ -5,7 +5,6 @@ subtitle: 数据并行、模型并行、混合并行
 tags: [MLSys, Parallelism]
 categories: [Parallel Training]
 comments: true
-readtime: true
 author: SeaMount
 ---
 
@@ -333,7 +332,7 @@ Colossal AI 提供多维张量并行，即以 2/2.5/3 维方式进行张量并�
 
     ![1F1B](/assets/img/20231121/1F1B.png){: .mx-auto.d-block :}
 
-    一个 stage 在做完一次 micro-batch 的 forward 之后，就立即进行 micro-batch 的 backward，然后释放资源，就可以让其它 stage 尽可能早开始计算。即把整体同步变成了众多小数据块上的异步，这些小数据块都是独立更新的。在 1F1B 的 steady 状态下，每台机器上严格交替进行前/后想计算，这样使得每个 GPU 上都会有一个 micro-batch 数据正在被处理，从而保证资源的高利用率。
+    一个 stage 在做完一次 micro-batch 的 forward 之后，就立即进行 micro-batch 的 backward，然后释放资源，就可以让其它 stage 尽可能早开始计算。即把整体同步变成了众多小数据块上的异步，这些小数据块都是独立更新的。在 1F1B 的 steady 状态下，每台机器上严格交替进行前/后向计算，这样使得每个 GPU 上都会有一个 micro-batch 的数据正在被处理，从而保证资源的高利用率。
 
     Bubble 时间为
     $$O(\frac{K-1}{K+M-1})$$
