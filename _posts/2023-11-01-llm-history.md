@@ -5,7 +5,7 @@ tags: [llm, Google, OpenAI]
 categories: [Machine Learning]
 comments: true
 thumbnail-img: /assets/img/20231101/llm-evolution.png
-author: SeaMount
+author: Hyaloid
 ---
 
 ![llm-evolution-tree](/assets/img/20231101/llm-evolution.png)

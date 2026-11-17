@@ -5,7 +5,7 @@ subtitle: Ubuntu-18.04 gcc 安装
 tags: [gcc, Linux, C/C++]
 categories: [Env]
 comments: true
-author: SeaMount
+author: Hyaloid
 ---
 
 最近在将一个 CPP 项目转成 CUDA 项目，但是编译的时候发现现有的 CUDA 版本和 GCC 版本不匹配，需要自己安装对应版本的 GCC，但是自己又没有服务器的超级用户权限，用不了 `update-alternatives`，所以需要使用源码编译安装与 CUDA 版本相匹配的相应版本的 GCC。

@@ -5,7 +5,7 @@ subtitle: Ubuntu-18.04 boost 安装
 tags: [boost, Linux, C/C++]
 categories: [Env]
 comments: true
-author: SeaMount
+author: Hyaloid
 ---
 
 去 [boost 官网](https://boostorg.jfrog.io/artifactory/main/release/)选择合适的版本下载，本文安装的是 boost-1.81.0。

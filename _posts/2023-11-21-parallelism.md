@@ -5,7 +5,7 @@ subtitle: 数据并行、模型并行、混合并行
 tags: [MLSys, Parallelism]
 categories: [Parallel Training]
 comments: true
-author: SeaMount
+author: Hyaloid
 ---
 
 近年来，随着模型规模的不断扩大，训练一个单独的模型所需要的算力和内存要求也越来越高。然而，由于内存墙的存在，单一设备的算力以及容量受到限制，而芯片的发展却难以跟上模型扩大的速度。为了解决算力增速不足的问题，人们开始考虑使用多节点集群进行分布式训练，以提升算力。

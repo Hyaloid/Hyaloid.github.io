@@ -5,7 +5,7 @@ subtitle: GPGPU
 tags: [MLSys, GPU, NVIDIA]
 categories: [Hardware]
 comments: true
-author: SeaMount
+author: Hyaloid
 ---
 
 图形处理器（Graphics Processing Unit, GPU），又称显卡核心、视觉处理器或显卡芯片，是一种专门在 PC、工作站、游戏机和一些移动终端上进行图像计算工作的处理器。20 世纪 80 年代之前，计算机的图形计算和处理工作都是由 CPU 完成的，而近几十年里，图形处理技术的重大变革，特别是图形界面操作系统（如微软的 Windows、国产的麒麟等）的出现和普及推动了新型图形处理器架构的更迭，GPU 也不再是只能作为辅助 CPU 的简单图像处理设备，逐渐发展为如今的通用高性能并行计算工具。

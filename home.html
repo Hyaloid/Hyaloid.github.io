@@ -1,0 +1,32 @@
+---
+layout: page
+title: Home
+subtitle: Life Notes
+permalink: /home/
+---
+
+{% assign notes = site.life | sort: "date" | reverse %}
+
+{% if notes.size == 0 %}
+<p class="text-muted">Nothing here yet.</p>
+{% else %}
+<ul class="posts-list list-unstyled" role="list">
+  {% for note in notes %}
+  <li class="post-preview">
+    <article>
+      <a href="{{ note.url | relative_url }}">
+        <h2 class="post-title">{{ note.title | strip_html }}</h2>
+        {% if note.subtitle %}
+        <h3 class="post-subtitle">{{ note.subtitle | strip_html }}</h3>
+        {% endif %}
+      </a>
+      <p class="post-meta">Posted on {{ note.date | date: site.date_format | default: "%B %-d, %Y" }}</p>
+      <div class="post-entry">
+        {{ note.excerpt | strip_html | truncatewords: site.excerpt_length }}
+        <a href="{{ note.url | relative_url }}" class="post-read-more">[Read More]</a>
+      </div>
+    </article>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}

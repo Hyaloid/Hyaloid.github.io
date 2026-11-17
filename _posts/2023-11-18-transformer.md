@@ -6,7 +6,7 @@ tags: [llm, Transformer]
 categories: [Machine Learning]
 comments: true
 thumbnail-img: /assets/img/20231118/transformer-architecture.png
-author: SeaMount
+author: Hyaloid
 ---
 
 2017 年 Google Brain 在 NeurIPS 上面发表了论文 Attention Is All You Need，文章中提出了一种新的 seq2seq 模型 —— Transformer。Transformer 舍弃了先前的 RNN/CNN 结构，采用 encoder-decoder 的结构，只使用注意力模型来进行序列建模，解决了之前 RNN 固有顺序不能并行化的缺点，Transformer 对于长序列语义的捕获能力也比先前的 RNN 结构更强。

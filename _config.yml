@@ -27,7 +27,7 @@ navbar-links:
     - Archives: "archive"
     # - Beautiful Jekyll: "https://beautifuljekyll.com"
     # - Learn markdown: "https://www.markdowntutorial.com/"
-  Home: "/"
+  Home: "/home/"
 
 ################
 # --- Logo --- #
@@ -254,7 +254,7 @@ date_format: "%B %-d, %Y"
 #################################################################################
 
 # Output options (more information on Jekyll's site)
-timezone: "America/Toronto"
+timezone: "Asia/Shanghai"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
@@ -263,8 +263,22 @@ paginate: 5
 kramdown:
   input: GFM
 
+# Life notes: files in _life/ are published under /home/ and listed on home.html
+collections:
+  life:
+    output: true
+    permalink: /home/:title/
+
 # Default YAML values (more information on Jekyll's site)
 defaults:
+  -
+    scope:
+      path: ""
+      type: "life"
+    values:
+      layout: "post"
+      comments: false
+      social-share: false
   -
     scope:
       path: ""
