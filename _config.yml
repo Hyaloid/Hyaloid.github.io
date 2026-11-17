@@ -27,7 +27,7 @@ navbar-links:
     - Archives: "archive"
     # - Beautiful Jekyll: "https://beautifuljekyll.com"
     # - Learn markdown: "https://www.markdowntutorial.com/"
-  Home: "Hyaloid.github.io"
+  Home: "/"
 
 ################
 # --- Logo --- #
@@ -289,6 +289,7 @@ exclude:
   - README.md
   - screenshot.png
   - docs/
+  - vendor/
 
 plugins:
   - jekyll-paginate
